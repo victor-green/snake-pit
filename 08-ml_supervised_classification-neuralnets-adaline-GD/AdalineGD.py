@@ -33,7 +33,7 @@ class AdalineGD(object):
 		Parameters
         ----------
         X : {array-like}, shape = [n_samples, n_features]
-            Training vectors, where n_samples 
+            Training vectors, where n_samples
             is the number of samples and
             n_features is the number of features.
         y : array-like, shape = [n_samples]
@@ -46,6 +46,7 @@ class AdalineGD(object):
 
 		self.w_ = np.zeros(1 + X.shape[1])
 		self.errors_ = []
+		self.cost_ = []
 
 		for _ in range(self.n_tier):
 			output = self.net_input(X)
@@ -70,5 +71,3 @@ class AdalineGD(object):
 	def predict(self, X):
 		"""Return class label after unit step"""
 		return np.where(self.net_input(X) >= 0.0, 1, -1)
-
-

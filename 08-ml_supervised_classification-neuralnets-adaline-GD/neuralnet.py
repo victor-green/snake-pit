@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from Perceptron import Perceptron
+from AdalineGD import AdalineGD
 
 
 def plot_decision_regions(X, y, classifier, resolution=0.02):
@@ -30,7 +30,8 @@ def plot_decision_regions(X, y, classifier, resolution=0.02):
 
 
 #Load Iris Dataset
-df = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data', header=None)
+df = pd.read_csv('../00-data/iris.csv', header=None)
+#df = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data', header=None)
 #print df.tail()
 
 y = df.iloc[0:100, 4].values
@@ -46,17 +47,28 @@ X = df.iloc[0:100, [0, 2]].values
 #plt.show()
 
 
-#Define and Plot Perceptron
-ppn = Perceptron(eta=0.1, n_tier=10)
-ppn.fit(X, y)
+#Apply Standardization to our input Dataset
+X_std = np.copy(X)
+X_std[:,0] = (X[:,0] - X[:,0].mean()) / X[:,0].std()
+X_std[:,1] = (X[:,1] - X[:,1].mean()) / X[:,1].std()
+
+#Define and Plot Adaline
+ada = AdalineGD(n_tier=15, eta=0.01)
+ada.fit(X_std, y)
 #plt.plot(range(1, len(ppn.errors_) + 1), ppn.errors_, marker='o')
 #plt.xlabel('Epochs')
 #plt.ylabel('Number of misclassifications')
 #plt.show()
 
 
-plot_decision_regions(X, y, classifier=ppn)
-plt.xlabel('sepal length [cm]')
-plt.ylabel('petal length [cm]')
+plot_decision_regions(X_std, y, classifier=ada)
+plt.title('Adaline - Gradient Descent')
+plt.xlabel('sepal length [standardized]')
+plt.ylabel('petal length [standardized]')
 plt.legend(loc='upper left')
 plt.show()
+
+#plt.plot(range(1, len(ada.cost_) + 1), ada.cost_, marker='o')
+#plt.xlabel('Epochs')
+#plt.ylabel('Sum-squared-error')
+#plt.show()
